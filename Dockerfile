@@ -1,17 +1,14 @@
-FROM python:3.8-slim-buster
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-ENV PYTHONUNBUFFERED=1
-
+# Working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get purge --auto-remove -y gcc
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Install FastAPI and Uvicorn
+RUN pip install fastapi uvicorn
 
-COPY . /app/
-
+# Run Uvicorn when the container launches
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
